@@ -97,7 +97,6 @@ public class ImageTagging implements PlugInFilter {
 			String colorName = (String)colorCompter.getKey();
 			int number = (Integer)colorCompter.getValue();
 			float percent = ((float)number / (ip.getWidth() *  ip.getHeight()) * 100);
-			stats += "color : " + colorName + " has " + percent + " %";
 			if(percent >= 20)
 				tags.add(colorName);
 		}
