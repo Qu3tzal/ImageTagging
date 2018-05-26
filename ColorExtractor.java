@@ -30,12 +30,12 @@ public class ColorExtractor implements PlugInFilter {
 		referenceColors.put(0xFF0000, "red");
 		referenceColors.put(0xFFFF00, "yellow");
 		referenceColors.put(0x00FF00, "green");
-		referenceColors.put(0x00FFFF, "cyan");
 		referenceColors.put(0x0000FF, "blue");
-		referenceColors.put(0xFF00FF, "magenta");
 		referenceColors.put(0xFFFFFF, "white");
 		referenceColors.put(0x000000, "black");
 		referenceColors.put(0x4A2D0D, "brown");
+		referenceColors.put(0xC0C0C0, "gray");
+		referenceColors.put(0xFFA500, "orange");
 
 		colorSpace = ColorSpace.RGB;
 
@@ -57,9 +57,9 @@ public class ColorExtractor implements PlugInFilter {
 					currentPixelValues = csc.RGBtoLAB(pixel);
 				} else {
 					currentPixelValues = new double[3];
-					currentPixelValues[0] = (0xFF & (pixel >> 16)) / 255.0;
-					currentPixelValues[1] = (0xFF & (pixel >> 8)) / 255.0;
-					currentPixelValues[2] = (0xFF & pixel) / 255.0;
+					currentPixelValues[0] = (0xFF & (pixel >> 16));
+					currentPixelValues[1] = (0xFF & (pixel >> 8));
+					currentPixelValues[2] = (0xFF & pixel);
 				}
 
 				double minDistance = Double.MAX_VALUE;
@@ -86,13 +86,18 @@ public class ColorExtractor implements PlugInFilter {
 									  + Math.pow(Math.abs(referenceValues[2] - currentPixelValues[2]), 2);
 					} else {
 						double[] referenceValues = new double[3];
-						referenceValues[0] = (0xFF & (colorReference >> 16)) / 255.0;
-						referenceValues[1] = (0xFF & (colorReference >> 8)) / 255.0;
-						referenceValues[2] = (0xFF & colorReference) / 255.0;
+						referenceValues[0] = (0xFF & (colorReference >> 16));
+						referenceValues[1] = (0xFF & (colorReference >> 8));
+						referenceValues[2] = (0xFF & colorReference);
 
-						colorDistance = Math.pow(Math.abs(referenceValues[0] - currentPixelValues[0]), 2)
-									  + Math.pow(Math.abs(referenceValues[1] - currentPixelValues[1]), 2)
-									  + Math.pow(Math.abs(referenceValues[2] - currentPixelValues[2]), 2);
+						double r = (referenceValues[0] + currentPixelValues[0]) / 2.0;
+						double r2 = Math.pow(Math.abs(referenceValues[0] - currentPixelValues[0]), 2);
+						double g2 = Math.pow(Math.abs(referenceValues[1] - currentPixelValues[1]), 2);
+						double b2 = Math.pow(Math.abs(referenceValues[2] - currentPixelValues[2]), 2) ;
+						colorDistance = Math.sqrt(2 * r2
+									  + 4 * g2
+									  + 3 * b2
+									  + (r * (r2 - b2)) / 256.0);
 					}
 
 					if(colorDistance < minDistance) {
