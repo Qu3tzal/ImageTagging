@@ -10,6 +10,8 @@ import java.lang.Math;
 public class ColorExtractor implements PlugInFilter {
 	private ImagePlus imp;
 	private Map<Integer, String> referenceColors;
+	private Map <String, Integer> colors;
+	
 	private enum ColorSpace {
 		RGB,
 		HSB,
@@ -20,21 +22,21 @@ public class ColorExtractor implements PlugInFilter {
 
 	public int setup(String arg, ImagePlus imp) {
 		this.imp = imp;
-
 		if(arg.equals("about")) {
 			IJ.showMessage("About ColorExtractor", "Extracts the main colors of the image.");
 			return DONE;
 		}
 
+		colors = new HashMap<String, Integer>();
 		referenceColors = new HashMap<Integer, String>();
 		referenceColors.put(0xFF0000, "red");
 		referenceColors.put(0xFFFF00, "yellow");
-		referenceColors.put(0x00FF00, "green");
-		referenceColors.put(0x0000FF, "blue");
+		referenceColors.put(0x3A9D23, "green");
+		referenceColors.put(0x0091fe, "blue");
 		referenceColors.put(0xFFFFFF, "white");
 		referenceColors.put(0x000000, "black");
 		referenceColors.put(0x4A2D0D, "brown");
-		referenceColors.put(0xC0C0C0, "gray");
+		referenceColors.put(0xD3D3D3, "gray");
 		referenceColors.put(0xFFA500, "orange");
 
 		colorSpace = ColorSpace.RGB;
@@ -106,11 +108,22 @@ public class ColorExtractor implements PlugInFilter {
 						closestColorRGBValue = colorReference;
 					}
 				}
+				
+				if (colors.containsKey(closestColor))
+					colors.put(closestColor, colors.get(closestColor) + 1);
+				else
+					colors.put(closestColor, 1);
 
 				ip.putPixel(column, row, closestColorRGBValue);
 			}
 		}
-
+		String stats = "";
+		for(Map.Entry colorCompter : colors.entrySet()) {
+			String colorName = (String)colorCompter.getKey();
+			int number = (Integer)colorCompter.getValue();
+			stats += "color : " + colorName + " has " + ((float)number / (ip.getWidth() *  ip.getHeight()) * 100) + " %";
+		}
+		IJ.showMessage("Done", stats);
 		IJ.showMessage("Done", "ColorExtractor finished its work.");
 	}
 }
