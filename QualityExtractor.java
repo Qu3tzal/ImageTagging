@@ -11,7 +11,7 @@ public class QualityExtractor implements PlugInFilter {
 
 	public int setup(String arg, ImagePlus imp) {
 		this.imp = imp;
-		
+
 		if(arg.equals("about")) {
 			IJ.showMessage("About QualityExtractor", "Extracts the quality of the image.");
 			return DONE;
@@ -34,6 +34,4 @@ public class QualityExtractor implements PlugInFilter {
 
 		IJ.showMessage("Mean brightness", "Mean brightness = " + meanValue);
 	}
-
-
 }
