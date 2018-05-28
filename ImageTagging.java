@@ -39,9 +39,16 @@ public class ImageTagging implements PlugInFilter {
 		// On ajoute toutes les couleurs de références à la liste
 		referenceColors = new HashMap<Integer, String>();
 		referenceColors.put(0xFF0000, "red");
+		referenceColors.put(0xF7230C, "red");
 		referenceColors.put(0xFFFF00, "yellow");
+		referenceColors.put(0xF7FF3C, "yellow");
+		referenceColors.put(0x00FF00, "green");
 		referenceColors.put(0x3A9D23, "green");
+		referenceColors.put(0x9EFD38, "green");
+		referenceColors.put(0x0F056B, "blue");
+		referenceColors.put(0x0000FF, "blue");
 		referenceColors.put(0x0091fe, "blue");
+		referenceColors.put(0x318CE7, "blue");
 		referenceColors.put(0xFFFFFF, "white");
 		referenceColors.put(0x000000, "black");
 		referenceColors.put(0x4A2D0D, "brown");
@@ -103,6 +110,8 @@ public class ImageTagging implements PlugInFilter {
 						closestColorRGBValue = colorReference;
 					}
 				}
+				
+				ip.putPixel(column, row, closestColorRGBValue);
 				
 				// On incrémente le compteur de la couleur la plus proche
 				if (colors.containsKey(closestColor))
